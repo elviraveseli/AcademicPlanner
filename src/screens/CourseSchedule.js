@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button, ScrollView, Alert } from 'react-native';
+import { KeyboardAvoidingView,Platform,View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button, ScrollView, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -279,6 +279,10 @@ const CourseSchedule = () => {
 
 
       <Modal visible={modalVisible} animationType="slide">
+      <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+  >
         <ScrollView contentContainerStyle={styles.modalContent}>
           <Text style={styles.modalTitle}>{currentCourse.id ? 'Edit Course' : 'Add Course'}</Text>
 
@@ -379,6 +383,7 @@ const CourseSchedule = () => {
               <Button title="Save" onPress={handleSaveCourse} color="#2196F3" />
             </View>
           </ScrollView>
+          </KeyboardAvoidingView>
       </Modal>
 
        

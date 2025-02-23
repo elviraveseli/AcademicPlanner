@@ -239,7 +239,8 @@ const Reminders = () => {
       if (updatedReminder.notificationId) {
         Notifications.cancelScheduledNotificationAsync(updatedReminder.notificationId);
       }
-  
+
+
       // Show success alert when marked as completed
       Alert.alert('Success', 'Reminder marked as completed!');
     } else {
