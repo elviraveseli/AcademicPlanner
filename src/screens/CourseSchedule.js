@@ -392,7 +392,7 @@ const CourseSchedule = () => {
   };
 
   const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#BBDEFB' },
+  container: { flex: 1, padding: 20, backgroundColor: '#E3F2FD' },
 
   buttonContainer: {
     flexDirection: 'row',
@@ -401,7 +401,7 @@ const CourseSchedule = () => {
   },
 
   addButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#2196F3',
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -414,7 +414,7 @@ const CourseSchedule = () => {
   },
 
   assignmentButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#2196F3',
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -442,12 +442,42 @@ const CourseSchedule = () => {
   courseInfo: { flex: 1 },
   courseName: { fontSize: 16, fontWeight: 'bold', color: '#0D47A1' },
   actions: { flexDirection: 'row', gap: 15 },
-  modalContent: { padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#1976D2' },
+  modalContent: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 40,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF', // White background for modal
+    borderRadius: 10, // Rounded corners for modal
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#1976D2',
+  },
   formGroup: { marginBottom: 15 },
-  label: { fontSize: 14, fontWeight: '600', color: '#444' },
-  input: { borderColor: '#42A5F5', borderWidth: 1, padding: 10, borderRadius: 5, backgroundColor: '#FAFAFA' },
-  errorText: { color: '#D32F2F', fontSize: 12 },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#444',
+    marginBottom: 5, // Added spacing
+  },
+  input: {
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#FAFAFA',
+    fontSize: 14,
+  },
+  errorText: {
+    color: '#D32F2F',
+    fontSize: 12,
+    marginTop: 5,
+  },
+
   modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
 
   searchContainer: {
@@ -455,25 +485,26 @@ const CourseSchedule = () => {
     alignItems: 'center',
     borderColor: '#42A5F5',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 25, // Rounded search bar
+    paddingHorizontal: 15,
     marginBottom: 10,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
 
   searchIcon: {
     marginRight: 10,
     color: '#1976D2',
   },
-
   searchInput: {
     flex: 1,
     height: 40,
     color: '#333',
+    fontSize: 14,
   },
 
   modalContent: {
@@ -481,7 +512,7 @@ const CourseSchedule = () => {
     padding: 20,
     paddingTop: 40,
     justifyContent: 'center',
-    backgroundColor: '#BBDEFB',
+    backgroundColor: '#FFFFFF',
   },
 });
 

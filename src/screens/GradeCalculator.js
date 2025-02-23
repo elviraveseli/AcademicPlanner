@@ -516,12 +516,9 @@ const GradeCalculator = () => {
 const styles = StyleSheet.create({
 
   container: {
-
     flex: 1,
-
     padding: 15,
-    backgroundColor: '#BBDEFB'
-
+    backgroundColor: '#E3F2FD', // Light blue background for a fresh look
   },
 
   searchContainer: {
@@ -529,25 +526,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#42A5F5',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 25, // Rounded search bar
+    paddingHorizontal: 15,
     marginBottom: 10,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
 
   searchIcon: {
     marginRight: 10,
     color: '#1976D2',
   },
-
   searchInput: {
     flex: 1,
     height: 40,
     color: '#333',
+    fontSize: 14,
   },
 
   buttonContainer: {
@@ -575,35 +573,27 @@ const styles = StyleSheet.create({
   },
 
   courseCard: {
-
-    backgroundColor: '#f8f8f8',
-
-    borderRadius: 8,
-
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
     padding: 15,
-
     marginBottom: 10,
-
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
 
   courseHeader: {
-
     flexDirection: 'row',
-
     justifyContent: 'space-between',
-
     alignItems: 'center',
-
     marginBottom: 10,
-
   },
-
   courseName: {
-
     fontSize: 18,
-
     fontWeight: 'bold',
-
+    color: '#0D47A1', // Dark blue for course names
   },
 
   headerActions: {
@@ -627,26 +617,28 @@ const styles = StyleSheet.create({
   componentItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    alignItems: 'center',
-    marginBottom: 10,  
+    marginBottom: 10,
   },
 
   componentName: {
 
-    flex: 2,
+    fontSize: 14,
+    color: '#333',
 
   },
   componentDetail: {
-    marginHorizontal: 5, // Add some space between weight and score
+    flex: 1,
+    marginHorizontal: 5,
   },
 
   label1: {
     fontWeight: 'bold', // Make label text bold
     marginBottom: 5, // Adds space between label and value
-    fontSize: 10, // Adjust font size for clarity
+    fontSize: 12, // Adjust font size for clarity
     color: '#555', // Make the label color slightly darker for better contrast
   },
 
@@ -673,15 +665,12 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-
     flex: 1,
-
     padding: 20,
-
+    paddingTop: 40,
     justifyContent: 'center',
-
-    backgroundColor: '#BBDEFB',
-
+    backgroundColor: '#FFFFFF', // White background for modal
+    borderRadius: 10, // Rounded corners for modal
   },
 
   modalTitle: {
@@ -693,6 +682,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
 
     textAlign: 'center',
+    color: '#1976D2',
 
   },
 
@@ -700,7 +690,7 @@ const styles = StyleSheet.create({
 
     height: 40,
 
-    borderColor: '#ddd',
+    borderColor: '#42A5F5',
 
     backgroundColor: '#FAFAFA',
 
@@ -711,13 +701,14 @@ const styles = StyleSheet.create({
     padding: 10,
 
     borderRadius: 5,
+    fontSize: 14,
 
   },
   label: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '600',
     marginBottom: 5,
-    color: '#333',
+    color: '#444',
   },
 
   modalButtons: {

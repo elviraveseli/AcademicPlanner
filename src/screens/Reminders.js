@@ -419,8 +419,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: '#BBDEFB'
-    ,justifyContent: 'flex-start'
+    backgroundColor: '#E3F2FD', // Light blue background for a fresh look
   },
   checkbox: {
     padding: 0,
@@ -432,6 +431,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
   markAsDoneText: {
     marginLeft: 10,  // Adds space between checkbox and text
@@ -457,14 +457,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 1,
   },
+  ToggleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#FAFAFA', // Light gray background for toggle button
+    borderColor: '#42A5F5', // Blue border for toggle button
+    borderWidth: 1,
+    marginBottom: 15,
+  },
+  
   reminderItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 5,
+    backgroundColor: '#FFFFFF', // White background for reminder items
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
   reminderInfo: {
     flex: 1,
@@ -472,30 +488,39 @@ const styles = StyleSheet.create({
   reminderTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#0D47A1', // Dark blue for reminder titles
     marginBottom: 5,
   },
   modalContent: {
     flex: 1,
     padding: 20,
+    paddingTop: 40,
     justifyContent: 'center',
-    backgroundColor: '#BBDEFB'
-    ,
+    backgroundColor: '#FFFFFF', // White background for modal
+    borderRadius: 10, // Rounded corners for modal
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#1976D2', // Dark blue for modal title
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#444', // Dark gray for labels
+    marginBottom: 5,
   },
   input: {
     height: 40,
-    borderColor: '#ddd',
+    borderColor: '#42A5F5', // Blue border for inputs
     borderWidth: 1,
     marginBottom: 15,
     padding: 10,
     borderRadius: 5,
-    justifyContent: 'center',
-    backgroundColor:'white'
+    backgroundColor: '#FAFAFA', // Light gray background for inputs
+    fontSize: 14,
   },
   modalButtons: {
     flexDirection: 'row',
@@ -507,6 +532,7 @@ const styles = StyleSheet.create({
     gap: 15,
     marginLeft: 10,
   },
+  
   recurrenceOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -524,8 +550,20 @@ const styles = StyleSheet.create({
   },
   recurrenceText: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 12,
     color: '#888',
+  },
+  dropdown: {
+    backgroundColor: '#FAFAFA', // Light gray background for dropdown
+    borderColor: '#42A5F5', // Blue border for dropdown
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  dropdownList: {
+    backgroundColor: '#FAFAFA', // Light gray background for dropdown list
+    borderColor: '#42A5F5', // Blue border for dropdown list
+    borderWidth: 1,
+    borderRadius: 5,
   },
 });
 

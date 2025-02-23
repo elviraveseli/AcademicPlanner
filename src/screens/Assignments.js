@@ -179,6 +179,8 @@ const handleSaveAssignment = () => {
     saveAssignments(updatedAssignments);
   };
 
+  
+
   const handleDeleteAssignment = (assignmentId) => {
     const updatedAssignments = assignments.filter(a => a.id !== assignmentId);
     setAssignments(updatedAssignments);
@@ -281,7 +283,7 @@ const handleSaveAssignment = () => {
         </View>
 
         <Modal visible={modalVisible} animationType="slide">
-          <View style={styles.modalContent}>
+          <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>
               {currentAssignment.id ? 'Edit Assignment' : 'Add Assignment'}
             </Text>
@@ -364,7 +366,19 @@ const handleSaveAssignment = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#BBDEFB' },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#E3F2FD', // Light blue background for a fresh look
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 40,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF', // White background for modal
+    borderRadius: 10, // Rounded corners for modal
+  },
 
   buttonContainer: {
     flexDirection: 'row',
@@ -373,7 +387,7 @@ const styles = StyleSheet.create({
   },
 
   addButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#2196F3',
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -386,7 +400,7 @@ const styles = StyleSheet.create({
   },
 
   gradeButton: {
-    backgroundColor: '#1976D2',
+    backgroundColor: '#2196F3',
     borderRadius: 30,
     width: 60,
     height: 60,
@@ -414,12 +428,29 @@ const styles = StyleSheet.create({
   courseInfo: { flex: 1 },
   courseName: { fontSize: 16, fontWeight: 'bold', color: '#0D47A1' },
   actions: { flexDirection: 'row', gap: 15 },
-  modalContent: { padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#1976D2' },
+  
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#1976D2', // Dark blue for modal title
+  },
   formGroup: { marginBottom: 15 },
-  label: { fontSize: 14, fontWeight: '600', color: '#444' },
-  input: { borderColor: '#42A5F5', borderWidth: 1, padding: 10, borderRadius: 5, backgroundColor: '#FAFAFA' },
-  errorText: { color: '#D32F2F', fontSize: 12 },
+  label: { fontSize: 14, fontWeight: '600', color: '#444',marginBottom: 5, },
+  input: {
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#FAFAFA',
+    fontSize: 14,
+    marginBottom: 15,
+  },
+  inputError: {
+    borderColor: '#D32F2F', // Red border for errors
+  },
+  errorText: { color: '#D32F2F', fontSize: 12,marginBottom: 10, },
   modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
 
   searchContainer: {
@@ -427,25 +458,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#42A5F5',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 25, // Rounded search bar
+    paddingHorizontal: 15,
     marginBottom: 10,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
 
   searchIcon: {
     marginRight: 10,
     color: '#1976D2',
   },
-
   searchInput: {
     flex: 1,
     height: 40,
     color: '#333',
+    fontSize: 14,
   },
 
   modalContent: {
@@ -461,13 +493,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow
   },
 
   completedItem: {
-    backgroundColor: '#B9F6CA',
-    opacity: 0.7,
+    backgroundColor: '#E8F5E9', // Light green for completed items
+    opacity: 0.8,
   },
 
   checkbox: {
@@ -485,12 +522,34 @@ const styles = StyleSheet.create({
   assignmentTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#0D47A1', // Dark blue for titles
   },
 
   courseName: {
     color: '#666',
     marginVertical: 3,
+    fontSize: 14,
   },
+  dueDateText: {
+    color: '#555',
+    fontSize: 12,
+  },
+  dropdownContainer: {
+    marginBottom: 15,
+  },
+  dropdown: {
+    backgroundColor: '#FAFAFA',
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  dropdownList: {
+    backgroundColor: '#FAFAFA',
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  
 });
 
 
