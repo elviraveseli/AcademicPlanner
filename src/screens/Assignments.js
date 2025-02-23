@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button, Keyboard } from 'react-native';
+import {Alert, View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button, Keyboard,ScrollView } from 'react-native';
 import { Icon, CheckBox } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -155,6 +155,12 @@ const handleSaveAssignment = () => {
   saveAssignments(sortedAssignments);
 
   setModalVisible(false);
+
+  Alert.alert(
+    'Success',
+    currentAssignment.id ? 'Assignment updated successfully!' : 'Assignment added successfully!',
+    [{ text: 'OK' }]
+  );
 };
 
 
@@ -177,21 +183,25 @@ const handleSaveAssignment = () => {
     const updatedAssignments = assignments.filter(a => a.id !== assignmentId);
     setAssignments(updatedAssignments);
     saveAssignments(updatedAssignments);
+
+    
   };
 
   return (
       <View style={styles.container}>
-        <TextInput
-        style={styles.searchInput}
-        placeholder="Search by course or assignment"
-        value={searchQuery}
-        onChangeText={filterAssignments} // Call filter function on text change
-        placeholderTextColor="black"
-      />
+        <View style={styles.searchContainer}>
+  <Icon name="search" type="material" color="gray" size={20} style={styles.searchIcon} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search by course or assignment"
+    value={searchQuery}
+    onChangeText={filterAssignments}
+    placeholderTextColor="black"
+  />
+</View>
 
-        <TouchableOpacity style={styles.addButton} onPress={handleAddAssignment}>
-          <Icon name="add" size={30} color="white" />
-        </TouchableOpacity>
+
+        
 
         <FlatList
           data={filteredAssignments}
@@ -202,6 +212,7 @@ const handleSaveAssignment = () => {
                 checked={item.completed}
                 onPress={() => toggleCompletion(item.id)}
                 containerStyle={styles.checkbox}
+                checkedColor="#008000"
               />
               <View style={styles.assignmentInfo}>
                 <Text style={styles.assignmentTitle}>{item.title}</Text>
@@ -211,25 +222,63 @@ const handleSaveAssignment = () => {
                 <Text>Priority: {item.priority}</Text>
               </View>
               <View style={styles.actions}>
-                {/* Navigate to Grade Calculator with assignment details */}
-                <TouchableOpacity 
-                  onPress={() => navigation.navigate('Grades', { assignment: item })}>
-                  <Icon name="calculate" type="material" color="#FF9800" />
-                </TouchableOpacity>
+               
 
                 <TouchableOpacity onPress={() => {
                   setCurrentAssignment({ ...item, dueDate: new Date(item.dueDate) });
                   setModalVisible(true);
                 }}>
-                  <Icon name="edit" type="material" color="#4CAF50" />
+                  <Icon name="edit" type="material" color="#FFC107" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteAssignment(item.id)}>
+                <TouchableOpacity onPress={() => Alert.alert(
+      'Confirm Deletion',
+      'Are you sure you want to delete this assignment?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Delete', 
+          style: 'destructive', 
+          onPress: () => {
+            // Proceed with deletion only when 'Delete' is pressed
+            const updatedAssignments = assignments.filter(a => a.id !==item.id);
+            setAssignments(updatedAssignments);
+            saveAssignments(updatedAssignments);
+    
+            // Show success alert
+            Alert.alert(
+              'Success',
+              'Assignment deleted successfully!',
+              [{ text: 'OK' }]
+            );
+          }
+        },
+      ]
+    )}>
                   <Icon name="delete" type="material" color="#F44336" />
                 </TouchableOpacity>
               </View>
             </View>
           )}
         />
+
+          
+                  <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                      style={styles.gradeButton} // Apply the styled button
+                      onPress={() => navigation.navigate('Grades')}
+                    >
+                      <Icon
+                        name="calculate"  // Use the assignment icon
+                        type="material"     // Use material icons
+                        color="white"       // White color for the icon
+                        size={30}           // Icon size
+                      />
+                    </TouchableOpacity>
+                  
+                    <TouchableOpacity style={styles.addButton} onPress={handleAddAssignment}>
+          <Icon name="add" size={30} color="white" />
+        </TouchableOpacity>
+        </View>
 
         <Modal visible={modalVisible} animationType="slide">
           <View style={styles.modalContent}>
@@ -315,22 +364,98 @@ const handleSaveAssignment = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
+  container: { flex: 1, padding: 20, backgroundColor: '#BBDEFB' },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
   },
+
   addButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1976D2',
     borderRadius: 30,
     width: 60,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
   },
+
+  gradeButton: {
+    backgroundColor: '#1976D2',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+  },
+
+  courseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    marginVertical: 5,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+
+  courseInfo: { flex: 1 },
+  courseName: { fontSize: 16, fontWeight: 'bold', color: '#0D47A1' },
+  actions: { flexDirection: 'row', gap: 15 },
+  modalContent: { padding: 20 },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#1976D2' },
+  formGroup: { marginBottom: 15 },
+  label: { fontSize: 14, fontWeight: '600', color: '#444' },
+  input: { borderColor: '#42A5F5', borderWidth: 1, padding: 10, borderRadius: 5, backgroundColor: '#FAFAFA' },
+  errorText: { color: '#D32F2F', fontSize: 12 },
+  modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+
+  searchIcon: {
+    marginRight: 10,
+    color: '#1976D2',
+  },
+
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#333',
+  },
+
+  modalContent: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 40,
+    justifyContent: 'center',
+    backgroundColor: '#BBDEFB',
+  },
+
   assignmentItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -339,10 +464,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
     borderRadius: 5,
   },
+
   completedItem: {
-    backgroundColor: '#e8f5e9',
+    backgroundColor: '#B9F6CA',
     opacity: 0.7,
   },
+
   checkbox: {
     padding: 0,
     margin: 0,
@@ -350,69 +477,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 0,
   },
+
   assignmentInfo: {
     flex: 1,
   },
+
   assignmentTitle: {
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   courseName: {
     color: '#666',
     marginVertical: 3,
   },
-  actions: {
-    flexDirection: 'row',
-    gap: 15,
-    marginLeft: 10,
-  },
-  modalContent: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    marginBottom: 15,
-    padding: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  inputError: {
-    borderColor: '#F44336',
-  },
-  errorText: {
-    color: '#F44336',
-    fontSize: 14,
-    marginBottom: 10,
-    textAlign: 'left',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-  },
-  searchInput: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    backgroundColor: 'lightgray',
-    marginBottom: 15,
-    paddingLeft: 10,
-    borderRadius: 5,}
 });
+
 
 export default Assignments;

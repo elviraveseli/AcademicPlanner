@@ -46,6 +46,20 @@ const CourseSchedule = () => {
     if (!/^\d{2}\.\d{2}\.\d{4}$/.test(currentCourse.endDate.trim()))
       newErrors.endDate = 'End date must be in DD.MM.YYYY format.';
 
+    // Validate that end time is greater than start time
+  const [startHour, startMinute] = currentCourse.startTime.split(':').map(Number);
+  const [endHour, endMinute] = currentCourse.endTime.split(':').map(Number);
+
+  if (endHour < startHour || (endHour === startHour && endMinute <= startMinute)) {
+    newErrors.endTime = 'End time must be greater than start time.';
+  }
+
+    const startDateObj = new Date(currentCourse.startDate.split('.').reverse().join('-'));
+  const endDateObj = new Date(currentCourse.endDate.split('.').reverse().join('-'));
+
+  if (endDateObj <= startDateObj) {
+    newErrors.endDate = 'End date must be greater than start date.';
+  }
     const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const daysArray = currentCourse.days.split(',').map((day) => day.trim());
     const invalidDays = daysArray.filter((day) => !validDays.includes(day));
@@ -89,7 +103,7 @@ const CourseSchedule = () => {
     if (!handleValidationErrors()) return;
 
     // Check for unique course name
-    const courseExists = courses.some((course) => course.name.trim().toLowerCase() === currentCourse.name.trim().toLowerCase());
+    const courseExists = courses.some((course) => course.name.trim().toLowerCase() === currentCourse.name.trim().toLowerCase() && course.id !== currentCourse.id);
     if (courseExists) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -113,6 +127,12 @@ const CourseSchedule = () => {
         setCourses(updatedCourses);
         saveCourses(updatedCourses);
       }
+
+      Alert.alert(
+        'Success',
+        currentCourse.id ? 'Course updated successfully!' : 'Course added successfully!',
+        [{ text: 'OK' }]
+      );
 
     setModalVisible(false);
   };
@@ -164,35 +184,16 @@ const CourseSchedule = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search by course name"
-        value={searchQuery}
-        onChangeText={handleSearch}
-        placeholderTextColor="black"
-      />
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => {
-          setCurrentCourse({
-            id: null,
-            name: '',
-            startTime: '',
-            endTime: '',
-            startDate: '',
-            endDate: '',
-            days: '',
-            location: '',
-          });
-          setModalVisible(true);
-        }}
-      >
-        <Icon name="add" size={30} color="white" />
-      </TouchableOpacity>
-
-
-      
-
+      <View style={styles.searchContainer}>
+  <Icon name="search" type="material" color="gray" size={20} style={styles.searchIcon} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search by course name"
+    value={searchQuery}
+    onChangeText={handleSearch}
+    placeholderTextColor="black"
+  />
+</View>
       <FlatList
           data={filteredCourses}
           keyExtractor={(item) => item.id}
@@ -211,15 +212,34 @@ const CourseSchedule = () => {
               </View>
               <View style={styles.actions}>
                 <TouchableOpacity onPress={() => { setCurrentCourse(item); setModalVisible(true); }}>
-                  <Icon name="edit" type="material" color="#4CAF50" />
+                  <Icon name="edit" type="material" color="#FFC107" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { 
-                  const updatedCourses = courses.filter(course => course.id !== item.id);
-                  setCourses(updatedCourses);
-                  saveCourses(updatedCourses);
-                }}>
-                  <Icon name="delete" type="material" color="#F44336" />
-                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+  Alert.alert(
+    'Confirm Deletion',
+    'Are you sure you want to delete this course?',
+    [
+      { text: 'Cancel', style: 'cancel' },
+      { 
+        text: 'Delete', 
+        style: 'destructive', 
+        onPress: () => {
+          const updatedCourses = courses.filter(course => course.id !== item.id);
+          setCourses(updatedCourses);
+          saveCourses(updatedCourses);
+
+          Alert.alert(
+            'Success',
+            'Course deleted successfully!',
+            [{ text: 'OK' }]
+          );
+        } 
+      },
+    ]
+  );
+}}>
+  <Icon name="delete" type="material" color="#F44336" />
+</TouchableOpacity>
                 
               </View>
               
@@ -227,20 +247,35 @@ const CourseSchedule = () => {
           )}
         />
         
-        <View style={styles.actions}>
-          {/* Styled button to navigate to the Assignments screen */}
-          <TouchableOpacity
-            style={styles.assignmentButton} // Apply the styled button
-            onPress={() => navigation.navigate('Assignments')}
-          >
-            <Icon
-              name="assignment"  // Use the assignment icon
-              type="material"     // Use material icons
-              color="white"       // White color for the icon
-              size={30}           // Icon size
-            />
-          </TouchableOpacity>
-        </View>
+        <View style={styles.buttonContainer}>
+        <TouchableOpacity
+    style={styles.assignmentButton}
+    onPress={() => navigation.navigate('Assignments')}
+  >
+    <Icon name="assignment" type="material" color="white" size={30} />
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.addButton}
+    onPress={() => {
+      setCurrentCourse({
+        id: null,
+        name: '',
+        startTime: '',
+        endTime: '',
+        startDate: '',
+        endDate: '',
+        days: '',
+        location: '',
+      });
+      setModalVisible(true);
+    }}
+  >
+    <Icon name="add" size={30} color="white" />
+  </TouchableOpacity>
+
+  
+</View>
 
 
       <Modal visible={modalVisible} animationType="slide">
@@ -351,63 +386,101 @@ const CourseSchedule = () => {
     );
   };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 ,justifyContent: 'flex-start',},
+  const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, backgroundColor: '#BBDEFB' },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+
   addButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1976D2',
     borderRadius: 30,
     width: 60,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
   },
+
+  assignmentButton: {
+    backgroundColor: '#1976D2',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+  },
+
   courseItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
     marginVertical: 5,
-    borderRadius: 5,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
+
   courseInfo: { flex: 1 },
-  courseName: { fontSize: 16, fontWeight: 'bold' },
+  courseName: { fontSize: 16, fontWeight: 'bold', color: '#0D47A1' },
   actions: { flexDirection: 'row', gap: 15 },
   modalContent: { padding: 20 },
-  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#1976D2' },
   formGroup: { marginBottom: 15 },
-  label: { fontSize: 14, fontWeight: '600' },
-  input: { borderColor: '#ccc', borderWidth: 1, padding: 10, borderRadius: 5 },
-  errorText: { color: 'red', fontSize: 12 },
+  label: { fontSize: 14, fontWeight: '600', color: '#444' },
+  input: { borderColor: '#42A5F5', borderWidth: 1, padding: 10, borderRadius: 5, backgroundColor: '#FAFAFA' },
+  errorText: { color: '#D32F2F', fontSize: 12 },
   modalButtons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
-  
-  assignmentButton: {
-    backgroundColor: '#2196F3', // Button color for assignments
-    borderRadius: 30,           // Rounded corners
-    width: 60,                  // Button width
-    height: 60,                 // Button height
-    justifyContent: 'center',   // Center the icon
-    alignItems: 'center',       // Center the icon inside the button
-    zIndex: 1,                  // Keep it above other elements if necessary
-  },
-  searchInput: {
-    height: 40,
-    borderColor: '#ccc',
+
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#42A5F5',
     borderWidth: 1,
     borderRadius: 5,
-    paddingLeft: 10,
+    paddingHorizontal: 10,
     marginBottom: 10,
-    backgroundColor: 'lightgray', // Optional for debugging
-    
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
+
+  searchIcon: {
+    marginRight: 10,
+    color: '#1976D2',
+  },
+
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#333',
+  },
+
   modalContent: {
     flex: 1,
     padding: 20,
-    paddingTop: 40,  // Add top padding to the modal content
+    paddingTop: 40,
     justifyContent: 'center',
+    backgroundColor: '#BBDEFB',
   },
 });
+
+  
+  
 
 export default CourseSchedule;

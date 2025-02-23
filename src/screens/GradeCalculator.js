@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button ,ScrollView} from 'react-native';
+import { Alert,View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Button ,ScrollView} from 'react-native';
 
 import { Icon } from 'react-native-elements';
 
@@ -17,6 +17,10 @@ const GradeCalculator = () => {
   const assignment = route.params?.assignment;
 
   const [courses, setCourses] = useState([]);
+
+  const [filteredCourses, setFilteredCourses] = useState([]);
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -55,6 +59,10 @@ const GradeCalculator = () => {
 
   }, []);
 
+  useEffect(() => {
+      setFilteredCourses(courses); // Initialize filteredCourses with all courses
+    }, [courses]);
+
   const loadCourses = async () => {
 
     try {
@@ -83,6 +91,18 @@ const GradeCalculator = () => {
 
     }
 
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query) {
+      const filtered = courses.filter(course =>
+        course.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredCourses(filtered);
+    } else {
+      setFilteredCourses(courses);
+    }
   };
 
   const calculateGrade = (components) => {
@@ -201,10 +221,11 @@ const GradeCalculator = () => {
       return;
     }
   
-    const totalWeight = currentCourse.components.reduce(
-      (sum, component) => sum + parseFloat(component.weight) || 0,
-      0
-    );
+    // Calculate the total weight of the components excluding the current component (if editing)
+  const totalWeight = currentCourse.components.reduce(
+    (sum, component) => sum + (component.id !== currentComponent.id ? parseFloat(component.weight) || 0 : 0),
+    0
+  );
   
     const newWeight = parseFloat(currentComponent.weight) || 0;
   
@@ -280,31 +301,19 @@ const GradeCalculator = () => {
 
     
         <View style={styles.container}>
-          
+        <View style={styles.searchContainer}>
+          <Icon name="search" type="material" color="gray" size={20} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by course name"
+            value={searchQuery}
+            onChangeText={handleSearch}
+            placeholderTextColor="black"
+          />
+        </View>
 
-          <TouchableOpacity style={styles.addButton} onPress={handleAddCourse}>
-
-            <Icon name="add" size={30} color="white" />
-
-          </TouchableOpacity>
-
-          <TouchableOpacity
-              style={styles.reminderButton} // Apply the styled button
-              onPress={() => navigation.navigate('Reminders')}
-            >
-              <Icon
-                name="notifications"  // You can change the icon name based on the icon you prefer
-                type="material"        // Use material icons or other types depending on your library
-                color="white"          // White color for the icon
-                size={30}              // Icon size
-              />
-            </TouchableOpacity>
-
-          
-            
-        
         <FlatList
-          data={courses}
+          data={filteredCourses}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.courseCard}>
@@ -316,7 +325,34 @@ const GradeCalculator = () => {
                         <TouchableOpacity onPress={() => handleAddComponent(item)}>
                           <Icon name="add-circle" color="#4CAF50" size={24} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                        <TouchableOpacity onPress={() => Alert.alert(
+    'Delete Course',
+    'Are you sure you want to delete this course?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          const updatedCourses = courses.filter(c => c.id !== item.id);
+          setCourses(updatedCourses);
+          saveCourses(updatedCourses);
+
+          // Success alert
+          Alert.alert(
+            'Success',
+            'Course has been successfully deleted.',
+            [{ text: 'OK' }],
+            { cancelable: false }
+          );
+        },
+      },
+    ],
+    { cancelable: false }
+  )}>
                           <Icon name="delete" color="#F44336" size={24} />
                         </TouchableOpacity>
                       </>
@@ -345,7 +381,33 @@ const GradeCalculator = () => {
                           <TouchableOpacity onPress={() => handleEditComponent(item.id, component)}>
                             <Icon name="edit" color="#FFC107" size={20} />
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={() => handleDeleteComponent(item.id, component.id)}>
+                          <TouchableOpacity onPress={() => Alert.alert(
+                        'Delete Component',
+                        'Are you sure you want to delete this component?',
+                        [
+                          {
+                            text: 'Cancel',
+                            style: 'cancel',
+                          },
+                          {
+                            text: 'Delete',
+                            style: 'destructive',
+                            onPress: () => {
+                              // Deleting the component
+                              handleDeleteComponent(item.id, component.id);
+
+                              // Show success alert
+                              Alert.alert(
+                                'Success',
+                                'Component has been successfully deleted.',
+                                [{ text: 'OK' }],
+                                { cancelable: false }
+                              );
+                            },
+                          },
+                        ],
+                        { cancelable: false }
+                      )}>
                             <Icon name="delete" color="#F44336" size={20} />
                           </TouchableOpacity>
                         </>
@@ -371,6 +433,23 @@ const GradeCalculator = () => {
             </View>
           )}
         />
+        <View style={styles.buttonContainer}>
+                          <TouchableOpacity
+                              style={styles.reminderButton} // Apply the styled button
+                              onPress={() => navigation.navigate('Reminders')}
+                            >
+                              <Icon
+                                name="notifications"  // Use the assignment icon
+                                type="material"     // Use material icons
+                                color="white"       // White color for the icon
+                                size={30}           // Icon size
+                              />
+                            </TouchableOpacity>
+                          
+                            <TouchableOpacity style={styles.addButton} onPress={handleAddCourse}>
+                  <Icon name="add" size={30} color="white" />
+                </TouchableOpacity>
+                </View>
 
         {/* Course Modal */}
         <Modal visible={modalVisible} animationType="slide">
@@ -441,31 +520,58 @@ const styles = StyleSheet.create({
     flex: 1,
 
     padding: 15,
+    backgroundColor: '#BBDEFB'
 
   },
 
-  addButton: {
-
-    position: 'absolute',
-
-    right: 20,
-
-    bottom: 20,
-
-    backgroundColor: '#2196F3',
-
-    borderRadius: 30,
-
-    width: 60,
-
-    height: 60,
-
-    justifyContent: 'center',
-
+  searchContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    borderColor: '#42A5F5',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
 
-    zIndex: 1,
+  searchIcon: {
+    marginRight: 10,
+    color: '#1976D2',
+  },
 
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: '#333',
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Add button on the right, Assignment button on the left
+    padding: 10, // Padding for better spacing
+  },
+  
+  
+  
+  addButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+  },
+  
+  reminderButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
   },
 
   courseCard: {
@@ -574,6 +680,8 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
 
+    backgroundColor: '#BBDEFB',
+
   },
 
   modalTitle: {
@@ -593,6 +701,8 @@ const styles = StyleSheet.create({
     height: 40,
 
     borderColor: '#ddd',
+
+    backgroundColor: '#FAFAFA',
 
     borderWidth: 1,
 
@@ -626,19 +736,8 @@ const styles = StyleSheet.create({
   },
 
 
-  reminderButton: {
-  backgroundColor: '#2196F3', // Blue background color
-  padding: 12, // Padding for the button
-  borderRadius: 50, // Circle button
-  alignItems: 'center', // Center icon inside the button
-  justifyContent: 'center', // Align icon in the center
-  width: 60, // Width of the button (adjust as necessary)
-  height: 60, // Height of the button (same as width to make it circular)
-  position: 'absolute', // Position it absolutely
-  bottom: 20, // Distance from the bottom edge
-  left: 20, // Distance from the left edge
-  zIndex: 1, // Make sure it's on top of other content
-},
+  
+
 });
 
 export default GradeCalculator;
