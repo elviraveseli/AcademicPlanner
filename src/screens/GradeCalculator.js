@@ -163,12 +163,16 @@ const GradeCalculator = () => {
 
   };
 
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 9); // Short unique ID
+  };
+
   const handleSaveCourse = () => {
     if (!currentCourse.name) return;
   
     const newCourse = {
       ...currentCourse,
-      id: currentCourse.id || Date.now().toString(),
+      id: currentCourse.id || generateUniqueId(),
     };
   
     const updatedCourses = currentCourse.id
@@ -248,7 +252,7 @@ const GradeCalculator = () => {
         ...currentCourse.components,
         {
           ...currentComponent,
-          id: Date.now().toString(), // Assign a unique ID for the new component
+          id: generateUniqueId(), // Assign a unique ID for the new component
         },
       ];
     }

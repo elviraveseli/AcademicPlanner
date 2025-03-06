@@ -97,6 +97,10 @@ const CourseSchedule = () => {
     ]);
   };
 
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 9); // Short unique ID
+  };
+
   // Handle save course with unique name validation
   const handleSaveCourse = () => {
     // Check for validation errors first
@@ -122,7 +126,7 @@ const CourseSchedule = () => {
         saveCourses(updatedCourses);
       } else {
         // Add new course
-        const newCourse = { ...currentCourse, id: Date.now().toString() };
+        const newCourse = { ...currentCourse, id: generateUniqueId() };
         const updatedCourses = [...courses, newCourse];
         setCourses(updatedCourses);
         saveCourses(updatedCourses);

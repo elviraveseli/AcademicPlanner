@@ -76,7 +76,7 @@ const Reminders = () => {
         const reminderTapped = reminders.find(r => r.id === reminderId);
         if (reminderTapped) {
           setCurrentReminder(reminderTapped);
-          setModalVisible(true);
+          
         }
       }
     });
@@ -148,6 +148,11 @@ const Reminders = () => {
     setModalVisible(true);
   };
 
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 9); // Short unique ID
+  };
+  
+
   const handleSaveReminder = async () => {
     try {
       if (!currentReminder.title || !currentReminder.date) {
@@ -175,7 +180,7 @@ const Reminders = () => {
 
     const newReminder = {
       ...currentReminder,
-      id: currentReminder.id || Date.now().toString(),
+      id: currentReminder.id || generateUniqueId(),
       notificationId,
       recurrence: recurrence,
     };

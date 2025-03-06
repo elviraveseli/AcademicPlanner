@@ -126,6 +126,10 @@ const Assignments = () => {
   return valid;
 };
 
+const generateUniqueId = () => {
+  return Math.random().toString(36).substr(2, 9); // Short unique ID
+};
+
 
 const handleSaveAssignment = () => {
   if (!validateInputs()) return;
@@ -141,7 +145,7 @@ const handleSaveAssignment = () => {
 
   const newAssignment = {
     ...currentAssignment,
-    id: currentAssignment.id || Date.now().toString(),
+    id: currentAssignment.id || generateUniqueId(),
     dueDate: currentAssignment.dueDate.toISOString()
   };
 
